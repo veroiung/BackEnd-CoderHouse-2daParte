@@ -1,0 +1,74 @@
+[
+	{
+		"title": "Denim",
+		"description": "Negro",
+		"price": 500,
+		"thumbnail": "Images not available",
+		"code": "002",
+		"stock": "35",
+		"id": 1
+	},
+	{
+		"title": "Denim",
+		"description": "Gris",
+		"price": 9500,
+		"thumbnail": "Images not available",
+		"code": "003",
+		"stock": "30",
+		"id": 2
+	},
+	{
+		"title": "Denim",
+		"description": "Azul",
+		"price": 8500,
+		"thumbnail": "Images not available",
+		"code": "004",
+		"stock": "40",
+		"id": 3
+	},
+	{
+		"title": "Denim",
+		"description": "Verde",
+		"price": 10200,
+		"thumbnail": "Images not available",
+		"code": "008",
+		"stock": "35",
+		"id": 4
+	},
+	{
+		"title": "Denim",
+		"description": "Amarillo",
+		"price": 9200,
+		"thumbnail": null,
+		"code": "009",
+		"stock": "25",
+		"id": 5
+	},
+	{
+		"title": "Denim",
+		"description": "Naranja",
+		"price": 9000,
+		"thumbnail": "Images not available",
+		"code": "010",
+		"stock": "35",
+		"id": 6
+	},
+	{
+		"title": "Denim",
+		"description": "rojo",
+		"price": 11000,
+		"thumbnail": "Images not available",
+		"code": "015",
+		"stock": "25",
+		"id": 7
+	},
+	{
+		"title": "Melange",
+		"description": "Blanco",
+		"price": "12000",
+		"stock": "12",
+		"code": "032",
+		"thumbnail": null,
+		"id": 8
+	}
+]
