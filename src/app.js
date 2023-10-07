@@ -3,9 +3,10 @@ import { engine } from "express-handlebars"
 import * as path from "path";
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
-import dotenv from "dotenv";
+import config from './config/config.js';
 
-dotenv.config()//levanta la data de .evn
+
+
 
 //import handlebars from "express-handlebars";
 
@@ -74,7 +75,8 @@ app.use('/api/jwt', jwtRouter)
 app.use("/github", githubLoginViewRouter);
 
 
-const PORT = 8080;
+//const PORT = 8080;
+const PORT = config.port;
 
 connectToDB()
 
@@ -85,6 +87,7 @@ const httpServer = app.listen(PORT, () => {
         console.log(`\t2). http://localhost:${PORT}/api/carts`);
         //console.log(process);
         //console.log(process.argv.slice(2));
+        //console.log(process.env.URL_MONGO);
     }
     catch (err) {
         console.log(err);
