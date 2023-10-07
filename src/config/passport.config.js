@@ -2,14 +2,10 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import GitHubStrategy from 'passport-github2';
 import userModel from '../models/user.model.js';
-import {
-    createHash,
-    isValidPassword
-} from '../utils.js';
+import { createHash, isValidPassword } from '../utils.js';
 import jwtStrategy from 'passport-jwt';
-import {
-    PRIVATE_KEY
-} from '../utils.js';
+import { PRIVATE_KEY } from '../utils.js';
+
 
 const JwtStrategy = jwtStrategy.Strategy;
 const ExtractJWT = jwtStrategy.ExtractJwt;
@@ -62,7 +58,7 @@ passport.deserializeUser(async (id, done) => {
     /*=============================================
     =                GitHubStrategy               =
     =============================================*/
-    // TODO: Estrategia de Login con GitHub
+    //Estrategia de Login con GitHub
     passport.use('github', new GitHubStrategy({
             clientID: '< Replace-clientID >',
             clientSecret: '< Replace-clientSecret >',
@@ -95,7 +91,7 @@ passport.deserializeUser(async (id, done) => {
                     return done(null, user)
                 }
             } catch (error) {
-                return done(error)
+                return done("Error registrando al usuario" + error);
             }
         }))
 
@@ -187,6 +183,7 @@ const cookieExtractor = req => {
     let token = null;
     console.log("Entrando a Cookie Extractor");
     if (req && req.cookies) {
+        token = req.cookies["jwtCookieToken"];
         console.log("Cookies presentes: ");
         console.log(req.cookies);
         token = req.cookies['jwtCookieToken']

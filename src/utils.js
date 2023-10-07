@@ -2,19 +2,24 @@ import {fileURLToPath} from 'url';
 import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import passport from 'passport';
+//import passport from 'passport';
 
+import envCongif from './config/env.config.js'
+
+
+//archivos locales
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-//Crypto functions
+//encriptacion
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 export const isValidPassword = (user, password) => {
     console.log(`Datos a validar: user-password: ${user.password}, password: ${password}`);
     return bcrypt.compareSync(password, user.password);
 }
 
-//JSON Web Tokens JWT functinos:
+
+//JSON Web Tokens JWT:
 export const PRIVATE_KEY = "CoderhouseBackendCourseSecretKeyJWT";
 /**
  * Generate token JWT usando jwt.sign:
@@ -54,11 +59,7 @@ export const authToken = (req, res, next) => {
 
 // passportCall
 
-
 // authorization
-
-
-
 
 
 export default __dirname;

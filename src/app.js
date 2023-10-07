@@ -3,8 +3,7 @@ import { engine } from "express-handlebars"
 import * as path from "path";
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
-import config from './config/config.js';
-
+import configEnv from './config/env.config.js';
 
 
 
@@ -76,7 +75,7 @@ app.use("/github", githubLoginViewRouter);
 
 
 //const PORT = 8080;
-const PORT = config.port;
+const PORT = configEnv.port;
 
 connectToDB()
 
@@ -168,25 +167,25 @@ app.use(session({
 // app.use('/api/cart', cartRoutes);
 
 
-socketServer.on('connection', async (socket) => {
-    console.log(`Usuario conectado: ${socket.id}`);
-    
-    socket.on('disconnect', () => {
-        console.log(`Usuario desconectado`);
-    })
+//socketServer.on('connection', async (socket) => {
+//    console.log(`Usuario conectado: ${socket.id}`);
+//    
+//   socket.on('disconnect', () => {
+//        console.log(`Usuario desconectado`);
+//    })
 
-    socket.emit('reloadProducts', await productManager.getProducts());
+//   socket.emit('reloadProducts', await productManager.getProducts());
 
-    socket.on('respuesta', (message) =>{
-        console.log(message);
-    });
+//    socket.on('respuesta', (message) =>{
+//        console.log(message);
+//    });
 
-    socket.on('newProduct', async (obj) =>{
-    await productManager.addProduct(obj);
-    socketServer.emit('reloadProducts', await productManager.getProducts());
-})
+//    socket.on('newProduct', async (obj) =>{
+//    await productManager.addProduct(obj);
+//   socketServer.emit('reloadProducts', await productManager.getProducts());
+//})
 
-})
+//})
 
 
 
