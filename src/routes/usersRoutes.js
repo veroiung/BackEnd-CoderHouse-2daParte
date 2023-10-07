@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { authToken } from '../utils.js'
+import passport from "passport";
+//import { authToken } from '../utils.js'
 
 const routerU = Router();
 
@@ -18,11 +19,22 @@ routerU.get("/register", (req, res) => {
 //    })
 //});
 
-routerU.get("/", authToken, (req, res) => {
-    res.render("profile", {
-        user: req.user
-    });
-});
+//routerU.get("/", authToken, (req, res) => {
+//    res.render("profile", {
+//        user: req.user
+//    });
+//});
+
+// Endpoint que renderiza la vista del perfil de usuario
+routerU.get('/',
+    // Middlewares
+    passport.authenticate('jwt', { session: false }), //-> Usando passport-JWT por Cookie
+
+    (req, res) => {
+        res.render('profile', { user: req.user })
+    }
+)
+
 
 routerU.get("/error", (req, res)=>{
     res.render("error");

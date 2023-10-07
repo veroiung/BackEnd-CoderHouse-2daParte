@@ -2,21 +2,68 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import GitHubStrategy from 'passport-github2';
 import userModel from '../models/user.model.js';
-import { createHash, isValidPassword } from '../utils.js';
+import {
+    createHash,
+    isValidPassword
+} from '../utils.js';
+import jwtStrategy from 'passport-jwt';
+import {
+    PRIVATE_KEY
+} from '../utils.js';
+
+const JwtStrategy = jwtStrategy.Strategy;
+const ExtractJWT = jwtStrategy.ExtractJwt;
 
 //Declaramos nuestra estrategia:
 const localStrategy = passportLocal.Strategy;
 const initializePassport = () => {
+
+//Estrategia de obtener Token JWT por Cookie:
+passport.use('jwt', new JwtStrategy(
+    // extraer la  cookie
+    {
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: PRIVATE_KEY
+    },
+    // Ambiente Async
+    async (jwt_payload, done) => {
+        console.log("Entrando a passport Strategy con JWT.");
+        try {
+            console.log("JWT obtenido del payload");
+            console.log(jwt_payload);
+            return done(null, jwt_payload.user)// Si todo va bien, nuestro user va estar dentro del jwt_payload
+        } catch (error) {
+            console.error(error);
+            return done(error);
+        }
+    }
+
+));
+
+//Funciones de Serializacion y Desserializacion
+passport.serializeUser((user, done) => {
+    done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        let user = await userModel.findById(id);
+        done(null, user);
+    } catch (error) {
+        console.error("Error deserializando el usuario: " + error);
+    }
+});
+
+
     /**
-      *  Inicializando la estrategia para github.
-      *  Done será nuestro callback
+     *  Inicializando la estrategia para github.
+     *  Done será nuestro callback
      */
     /*=============================================
     =                GitHubStrategy               =
     =============================================*/
     // TODO: Estrategia de Login con GitHub
-    passport.use('github', new GitHubStrategy(
-        {
+    passport.use('github', new GitHubStrategy({
             clientID: '< Replace-clientID >',
             clientSecret: '< Replace-clientSecret >',
             callbackUrl: 'http://localhost:9090/api/sessions/githubcallback'
@@ -26,7 +73,9 @@ const initializePassport = () => {
             console.log(profile);
 
             try {
-                const user = await userModel.findOne({ email: profile._json.email })
+                const user = await userModel.findOne({
+                    email: profile._json.email
+                })
                 console.log("Usuario encontrado para login:");
                 console.log(user);
 
@@ -42,8 +91,7 @@ const initializePassport = () => {
                     }
                     const result = await userModel.create(newUser)
                     done(null, result)
-                }
-                else {
+                } else {
                     return done(null, user)
                 }
             } catch (error) {
@@ -57,53 +105,64 @@ const initializePassport = () => {
     =                localStrategy                =
     =============================================*/
     //Estrategia de registro de usuario
-    passport.use('register', new localStrategy(
-        { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
-            const { first_name, last_name, email, age } = req.body;
-            try {
-                const exists = await userModel.findOne({ email });
-                if (exists) {
-                    console.log("El usuario ya existe.");
-                    return done(null, false);
-                }
-                const user = {
-                    first_name,
-                    last_name,
-                    email,
-                    age,
-                    password: createHash(password),
-                    loggedBy: "App"
-                };
-                const result = await userModel.create(user);
-                //Todo sale OK
-                return done(null, result);
-            } catch (error) {
-                return done("Error registrando el usuario: " + error);
+    passport.use('register', new localStrategy({
+        passReqToCallback: true,
+        usernameField: 'email'
+    }, async (req, username, password, done) => {
+        const {
+            first_name,
+            last_name,
+            email,
+            age
+        } = req.body;
+        try {
+            const exists = await userModel.findOne({
+                email
+            });
+            if (exists) {
+                console.log("El usuario ya existe.");
+                return done(null, false);
             }
+            const user = {
+                first_name,
+                last_name,
+                email,
+                age,
+                password: createHash(password),
+                loggedBy: "App"
+            };
+            const result = await userModel.create(user);
+            //Todo sale OK
+            return done(null, result);
+        } catch (error) {
+            return done("Error registrando el usuario: " + error);
         }
-    ));
+    }));
 
     //Estrategia de Login de la app:
-    passport.use('login', new localStrategy(
-        { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
-            try {
-                const user = await userModel.findOne({ email: username });
-                console.log("Usuario encontrado para login:");
-                console.log(user);
-                if (!user) {
-                    console.warn("User doesn't exists with username: " + username);
-                    return done(null, false);
-                }
-                if (!isValidPassword(user, password)) {
-                    console.warn("Invalid credentials for user: " + username);
-                    return done(null, false);
-                }
-                return done(null, user);
-            } catch (error) {
-                return done(error);
+    passport.use('login', new localStrategy({
+        passReqToCallback: true,
+        usernameField: 'email'
+    }, async (req, username, password, done) => {
+        try {
+            const user = await userModel.findOne({
+                email: username
+            });
+            console.log("Usuario encontrado para login:");
+            console.log(user);
+            if (!user) {
+                console.warn("User doesn't exists with username: " + username);
+                return done(null, false);
             }
-        })
-    );
+            if (!isValidPassword(user, password)) {
+                console.warn("Invalid credentials for user: " + username);
+                return done(null, false);
+            }
+            return done(null, user);
+        } catch (error) {
+            return done(error);
+        }
+    }));
 
 
     /*=============================================
@@ -122,5 +181,19 @@ const initializePassport = () => {
         }
     });
 };
+
+// Funcion para hacer la extraccion de la cookie
+const cookieExtractor = req => {
+    let token = null;
+    console.log("Entrando a Cookie Extractor");
+    if (req && req.cookies) {
+        console.log("Cookies presentes: ");
+        console.log(req.cookies);
+        token = req.cookies['jwtCookieToken']
+        console.log("Token obtenido desde Cookie:");
+        console.log(token);
+    }
+    return token;
+}
 
 export default initializePassport;

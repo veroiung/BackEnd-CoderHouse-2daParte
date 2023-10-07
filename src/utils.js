@@ -1,7 +1,8 @@
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import passport from 'passport';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,11 +14,8 @@ export const isValidPassword = (user, password) => {
     return bcrypt.compareSync(password, user.password);
 }
 
-
-// JWT
-const PRIVATE_KEY = "CoderhouseBackendCourseSecretKeyJWT";
-
-
+//JSON Web Tokens JWT functinos:
+export const PRIVATE_KEY = "CoderhouseBackendCourseSecretKeyJWT";
 /**
  * Generate token JWT usando jwt.sign:
  * Primer argumento: objeto a cifrar dentro del JWT
@@ -25,10 +23,8 @@ const PRIVATE_KEY = "CoderhouseBackendCourseSecretKeyJWT";
  * Tercer argumento: Tiempo de expiración del token.
  */
 export const generateJWToken = (user) => {
-    return jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' });
+    return jwt.sign({user}, PRIVATE_KEY, {expiresIn: '60s'});
 };
-
-
 /**
  * Metodo que autentica el token JWT para nuestros requests.
  * OJO: Esto actúa como un middleware, observar el next.
@@ -42,18 +38,24 @@ export const authToken = (req, res, next) => {
     console.log("Token present in header auth:");
     console.log(authHeader);
     if (!authHeader) {
-        return res.status(401).send({ error: "User not authenticated or missing token." });
+        return res.status(401).send({error: "User not authenticated or missing token."});
     }
     const token = authHeader.split(' ')[1]; //Se hace el split para retirar la palabra Bearer.
     //Validar token
     jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
-        if (error) return res.status(403).send({ error: "Token invalid, Unauthorized!" });
+        if (error) return res.status(403).send({error: "Token invalid, Unauthorized!"});
         //Token OK
         req.user = credentials.user;
         console.log(req.user);
         next();
     });
 };
+
+
+// passportCall
+
+
+// authorization
 
 
 

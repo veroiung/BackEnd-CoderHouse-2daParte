@@ -3,7 +3,11 @@ import { engine } from "express-handlebars"
 import * as path from "path";
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
+import dotenv from "dotenv";
 
+dotenv.config()//levanta la data de .evn
+
+//import handlebars from "express-handlebars";
 
 // dependencias para las sessions
 //import FileStore from 'session-file-store'
@@ -12,6 +16,7 @@ import MongoStore from 'connect-mongo'
 import session from 'express-session';
 
 //Passport imports
+import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 
@@ -22,14 +27,13 @@ import routerC from './routes/cartsRoutes.js';
 import routerV from './routes/viewsRoutes.js';
 import routerS from './routes/sessionsRoutes.js';
 import routerU from './routes/usersRoutes.js';
-
-import githubLoginViewRouter from './routes/github-login.views.router.js'
+import jwtRouter from './routes/jwt.router.js';
+import githubLoginViewRouter from './routes/github-login.views.router.js';
 
 //import ProductManager from "./managers/productManager.js";
 
 //import productRoutes from './routes/productsRoutes.js';
 //import cartRoutes from './routes/cartRoutes.js';
-
 
 
 import connectToDB from "./config/configServer.js"
@@ -48,9 +52,17 @@ app.use(express.urlencoded({extended:true}));
 app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", path.resolve(__dirname + "/views"))
-
 //Static
 app.use("/", express.static(__dirname + "/public"))
+
+//Cookies
+//router.use(cookieParser());
+app.use(cookieParser("CoderS3cr3tC0d3"));
+
+//TODO: Middlewares Passport
+initializePassport();
+app.use(passport.initialize())
+//app.use(passport.session())
 
 //Routers
 app.use('/api/products', routerP)
@@ -58,7 +70,7 @@ app.use('/api/carts', routerC)
 app.use('/', routerV);
 app.use('/users', routerU);
 app.use('/api/sessions', routerS);
-
+app.use('/api/jwt', jwtRouter)
 app.use("/github", githubLoginViewRouter);
 
 
@@ -71,6 +83,8 @@ const httpServer = app.listen(PORT, () => {
         console.log(`Listening to the port ${PORT}\nAcceder a:`);
         console.log(`\t1). http://localhost:${PORT}/api/products`)
         console.log(`\t2). http://localhost:${PORT}/api/carts`);
+        //console.log(process);
+        //console.log(process.argv.slice(2));
     }
     catch (err) {
         console.log(err);
@@ -112,7 +126,7 @@ app.use(session({
     store: MongoStore.create({
          mongoUrl: MONGO_URL,
     //     //mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-         ttl: 30
+         ttl: 60
     }),
 
     secret: "coderS3cr3t",
@@ -170,13 +184,6 @@ socketServer.on('connection', async (socket) => {
 })
 
 })
-
-//TODO: Middlewares Passport
-initializePassport();
-app.use(passport.initialize())
-app.use(passport.session())
-
-
 
 
 
