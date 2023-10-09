@@ -1,10 +1,8 @@
 
-import userModel from "../models/user.model.js";
-import {ProductModel }from "../models/product.model.js";
-import { createHash } from '../../../utils.js';
-import { isValidPassword } from '../../../utils.js';
-import { generateToken } from '../../../utils.js';
-import envConfig from '../../../config/env.config.js';
+import userModel from "./models/user.model.js"
+import {productsModel} from "./models/products.model.js"
+import { createHash, isValidPassword, generateJWToken } from '../../utils.js';
+import envConfig from '../../config/env.config.js';
 
 const PORT = envConfig.port;
 
@@ -39,7 +37,7 @@ export default class UserService {
                 email: exists.email,
                 role: exists.role,
             };
-            const accessToken = generateToken(tokenUser);
+            const accessToken = generateJWToken(tokenUser);
             //Cookies
             res.cookie('jwtCookieToken', accessToken, {
                 maxAge: 60000,  
@@ -59,7 +57,7 @@ export default class UserService {
             email: user.email,
             role: user.role,
         };
-        const accessToken = generateToken(tokenUser)
+        const accessToken = generateJWToken(tokenUser)
         res.cookie('jwtCookieToken', accessToken, {
             maxAge: 60000,  
             httpOnly: true,
@@ -69,7 +67,7 @@ export default class UserService {
     };
 
     loginShowProducts = async (page, req ,res) => {
-        let result = await ProductModel.paginate({}, {page, lean: true });
+        let result = await productsModel.paginate({}, {page, lean: true });
             let prevLink = result.hasPrevPage ? `http://localhost:${PORT}/users?page=${result.prevPage}` : '';
             let nextLink = result.hasNextPage ? `http://localhost:${PORT}/users?page=${result.nextPage}` : '';
             let isValid = !(result.page <= 0 || result.page > result.totalPages)

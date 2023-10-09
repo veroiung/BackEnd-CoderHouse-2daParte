@@ -1,4 +1,4 @@
-import cart from "../services/dao/models/carts.model.js";
+import CartServices from "../services/dao/cart.services.js";
 
 //controller create cart
 export const creatNewCart = async (req, res)=>{
@@ -6,7 +6,7 @@ export const creatNewCart = async (req, res)=>{
         const {body} = req;
     const result = await cartService.createCart(body);
     
-    if (cart) {
+    if (CartServices) {
         res.send({ status: "200", message: "Carrito creado con exito con ID: " + result.id , payload: result})
     }
     
@@ -17,14 +17,14 @@ export const creatNewCart = async (req, res)=>{
 };
 
 
-//controller get cart by id
+//controller get CartServices by id
 export const searchCart = async (req, res)=>{
     const cid = req.params.cid;
     try {
-        const cart = await cartService.getCartById({ _id : cid})
+        const CartServices = await cartService.getCartById({ _id : cid})
 
-        if (cart) {
-            res.send({ status: 'Success', payload: cart });
+        if (CartServices) {
+            res.send({ status: 'Success', payload: CartServices });
         } else {
             res.send({ status: '404', message: 'Carrito no encontrado' }); 
         }
@@ -39,9 +39,9 @@ export const putProductToCart = async (req, res) => {
     const { body } = req;
     const pid = body.id;
     try {
-        const cart = await cartService.prodInCart({_id:cid},{_id:pid})
-        if (cart) {
-            res.send({ status: 'Success', payload: cart });
+        const CartServices = await cartService.prodInCart({_id:cid},{_id:pid})
+        if (CartServices) {
+            res.send({ status: 'Success', payload: CartServices });
         } else {
             res.status(404).json({ error: 'Carrito o producto no encontrado' });
         }
@@ -55,9 +55,9 @@ export const deleteProductFromCart = async (req, res) =>{
     const cid = req.params.cid;
     const pid = req.params.pid;
     try {
-        const cart = await cartService.deleteProdInCart({ _id: cid }, { _id: pid });
-        if (cart) {
-            res.send({ status: 'Success', payload: cart });
+        const CartServices = await cartService.deleteProdInCart({ _id: cid }, { _id: pid });
+        if (CartServices) {
+            res.send({ status: 'Success', payload: CartServices });
         } else {
             res.status(404).json({ error: 'Carrito o producto no encontrado' });
         }
@@ -71,9 +71,9 @@ export const deleteProductFromCart = async (req, res) =>{
 export const cleanCart = async (req, res) => {
     const cid = req.params.cid;
     try {
-        const cart = await cartService.deleteAll({ _id: cid });     
-        if (cart) {
-            res.send({ status: 'Success', payload: cart });
+        const CartServices = await cartService.deleteAll({ _id: cid });     
+        if (CartServices) {
+            res.send({ status: 'Success', payload: CartServices });
         } else {
             res.status(404).json({ error: 'Carrito o producto no encontrado' });
         }

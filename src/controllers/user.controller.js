@@ -1,4 +1,4 @@
-import {userService} from '../services/dao/user.services.js';
+import userService from '../services/dao/user.services.js';
 
 /* const services = new userService(); */
 

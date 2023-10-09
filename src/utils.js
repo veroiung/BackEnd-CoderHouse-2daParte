@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 //import passport from 'passport';
 
-import envCongif from './config/env.config.js'
+//import envCongif from './config/env.config.js'
 
 
 //archivos locales

@@ -1,6 +1,6 @@
 import express from 'express';
-import { ProductModel } from '../models/products.model.js'
-import { CartModel } from '../models/carts.model.js';
+import {productsModel} from '../services/dao/models/products.model.js'
+import {cartModel} from '../services/dao/models/carts.model.js';
 import envConfig from '../config/env.config.js';
 
 const router = express.Router();
@@ -9,7 +9,7 @@ const PORT = envConfig.port;
 router.get('/', async (req, res) => {
         let page = parseInt(req.query.page);
         if (!page) page = 1;
-        let resultProd = await ProductModel.paginate({}, {page, lean: true })
+        let resultProd = await productsModel.paginate({}, {page, lean: true })
         let prevLink = resultProd.hasPrevPage ? `http://localhost:${PORT}/products?page=${resultProd.prevPage}` : '';
         let nextLink = resultProd.hasNextPage ? `http://localhost:${PORT}/products?page=${resultProd.nextPage}` : '';
         let isValid = !(resultProd.page <= 0 || resultProd.page > resultProd.totalPages)
@@ -21,7 +21,7 @@ router.get('/:cid', async (req, res) => {
         let page = parseInt(req.query.page);
         if (!page) page = 1;
 
-        const cartProducts= await CartModel.paginate({_id : cid},{page, lean: true, populate: {path : 'products.product'}  })
+        const cartProducts= await cartModel.paginate({_id : cid},{page, lean: true, populate: {path : 'products.product'}  })
 
         if (!cartProducts) {
                 return res.status(404).send('Carrito no encontrado');
