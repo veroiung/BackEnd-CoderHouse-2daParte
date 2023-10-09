@@ -1,4 +1,4 @@
-import { productService } from "../services/product.services.js";
+import { productService } from "../services/dao/product.services.js";
 
 
 

@@ -1,6 +1,6 @@
 
-import userModel from "./models/userModel.js";
-import {ProductModel }from "./models/productModel.js";
+import userModel from "../models/user.model.js";
+import {ProductModel }from "../models/product.model.js";
 import { createHash } from '../../../utils.js';
 import { isValidPassword } from '../../../utils.js';
 import { generateToken } from '../../../utils.js';

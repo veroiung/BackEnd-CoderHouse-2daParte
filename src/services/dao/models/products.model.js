@@ -37,6 +37,7 @@ const productSchema= new mongoose.Schema({
         default: true // Establecemos el valor por defecto en true
     }
 })
+
 productSchema.plugin(mongoosePaginate)
 
 export const productsModel= mongoose.model(productCollection, productSchema)

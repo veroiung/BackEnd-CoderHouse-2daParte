@@ -51,17 +51,14 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
-    /**
-     *  Inicializando la estrategia para github.
-     *  Done será nuestro callback
-     */
-    /*=============================================
-    =                GitHubStrategy               =
-    =============================================*/
+    /*  Inicializando la estrategia para github.
+        Donde será nuestro callback
+    */
+    /*GitHubStrategy*/
     //Estrategia de Login con GitHub
     passport.use('github', new GitHubStrategy({
-            clientID: '< Replace-clientID >',
-            clientSecret: '< Replace-clientSecret >',
+            clientID: '< Iv1.dd550f0fd70cef90 >',
+            clientSecret: '< 1cdf1a1170b01967c2102cbac4b6c0bc00898316 >',
             callbackUrl: 'http://localhost:9090/api/sessions/githubcallback'
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -97,9 +94,7 @@ passport.deserializeUser(async (id, done) => {
 
 
 
-    /*=============================================
-    =                localStrategy                =
-    =============================================*/
+    /*localStrategy*/
     //Estrategia de registro de usuario
     passport.use('register', new localStrategy({
         passReqToCallback: true,
@@ -161,9 +156,7 @@ passport.deserializeUser(async (id, done) => {
     }));
 
 
-    /*=============================================
-    = Funciones de Serializacion y Desserializacion =
-    =============================================*/
+    /*Funciones de Serializacion y Desserializacion*/
     passport.serializeUser((user, done) => {
         done(null, user._id);
     });

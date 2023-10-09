@@ -22,13 +22,18 @@ import initializePassport from './config/passport.config.js';
 
 
 //import Routers
-import routerP from './routes/productsRoutes.js';
-import routerC from './routes/cartsRoutes.js';
-import routerV from './routes/viewsRoutes.js';
-import routerS from './routes/sessionsRoutes.js';
-import routerU from './routes/usersRoutes.js';
-import jwtRouter from './routes/jwt.router.js';
-import githubLoginViewRouter from './routes/github-login.views.router.js';
+//import routerP from './routes/productsRoutes.js';
+//import routerC from './routes/cartsRoutes.js';
+//import routerV from './routes/viewsRoutes.js';
+//import routerS from './routes/sessionsRoutes.js';
+//import routerU from './routes/usersRoutes.js';
+//import jwtRouter from './routes/jwt.router.js';
+//import githubLoginViewRouter from './routes/github-login.views.router.js';
+import productRoutes from './routes/product.router.js'
+import cartRoutes from './routes/cart.router.js';
+import usersViewRouter from './routes/users.views.router.js';
+import userRouter from './routes/users.router.js'
+import views from './routes/view.router.js';
 
 //import ProductManager from "./managers/productManager.js";
 
@@ -65,14 +70,19 @@ app.use(passport.initialize())
 //app.use(passport.session())
 
 //Routers
-app.use('/api/products', routerP)
-app.use('/api/carts', routerC)
-app.use('/', routerV);
-app.use('/users', routerU);
-app.use('/api/sessions', routerS);
-app.use('/api/jwt', jwtRouter)
-app.use("/github", githubLoginViewRouter);
-
+//app.use('/api/products', routerP)
+//app.use('/api/carts', routerC)
+//app.use('/', routerV);
+//app.use('/users', routerU);
+//app.use('/api/sessions', routerS);
+//app.use('/api/jwt', jwtRouter)
+//app.use("/github", githubLoginViewRouter);
+app.use("/api/products", productRoutes)
+app.use("/api/carts", cartRoutes);  
+app.use("/products", views);
+app.use("/carts", views);
+app.use("/users", usersViewRouter);
+app.use("/api/users", userRouter);
 
 //const PORT = 8080;
 const PORT = configEnv.port;

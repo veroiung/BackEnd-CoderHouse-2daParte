@@ -1,4 +1,4 @@
-import cart from "../services/dao/models/cart.model.js";
+import cart from "../services/dao/models/carts.model.js";
 
 //controller create cart
 export const creatNewCart = async (req, res)=>{
